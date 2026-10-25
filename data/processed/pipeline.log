@@ -1,0 +1,20 @@
+[pipeline] season inventory
+[pipeline] engineering features on 2,124,073 pitches
+[pipeline] modeling frame 2,124,073 pitches
+[pipeline] fitting 2024-only model for year-over-year grades
+[pipeline] 2024 model kept 272 trees
+[pipeline] fitting 2024-2025 model for 2026 grades
+[pipeline] ship model kept 583 trees
+[pipeline] fitting whiff model
+[pipeline] whiff AUC 0.7520220035400558
+[pipeline] clustering pitch shapes
+[pipeline] mixture k=12 adjusted Rand vs pitch type 0.426
+[pipeline] aggregating arsenals
+[pipeline] memo pitcher John King (667463), Stuff+ 91.8
+[pipeline] reliability
+[pipeline] suggestions
+[pipeline] SHAP
+[pipeline] writing tables
+[pipeline] writing figures
+findfont: Failed to find font weight semibold for DejaVu Sans, now using 700.
+[pipeline] done

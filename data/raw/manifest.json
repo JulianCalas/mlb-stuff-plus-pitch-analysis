@@ -1,0 +1,31 @@
+{
+  "source": "Baseball Savant via pybaseball.statcast",
+  "game_type": "R",
+  "seasons": [
+    {
+      "pitches": 711899,
+      "pitchers": 855,
+      "first_date": "2024-03-20 00:00:00",
+      "last_date": "2024-09-30 00:00:00",
+      "season": 2024,
+      "path": "/workspace/data/raw/pitches_2024.parquet"
+    },
+    {
+      "pitches": 712528,
+      "pitchers": 873,
+      "first_date": "2025-03-18 00:00:00",
+      "last_date": "2025-09-28 00:00:00",
+      "season": 2025,
+      "path": "/workspace/data/raw/pitches_2025.parquet"
+    },
+    {
+      "pitches": 716792,
+      "pitchers": 868,
+      "first_date": "2026-03-25 00:00:00",
+      "last_date": "2026-09-27 00:00:00",
+      "season": 2026,
+      "path": "/workspace/data/raw/pitches_2026.parquet"
+    }
+  ],
+  "pulled_at": "2026-10-24T10:33:38Z"
+}
