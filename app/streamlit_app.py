@@ -2,7 +2,13 @@
 
 Pick a pitcher and read the arsenal the way a player-development group
 would: shape, grade, and a suggestion that cites the comparison it came
-from. Grades are precomputed. This file does not refit the model.
+from. Grades are precomputed. This file does not refit the model and
+does not open ``models/stuff_models.joblib``.
+
+Startup reads local parquet and JSON only. A fresh clone, including
+Streamlit Community Cloud, uses ``data/app``. A machine that has finished
+``scripts/run_pipeline.py`` uses ``data/processed`` instead, because that
+copy includes the full plot sample.
 
     streamlit run app/streamlit_app.py --server.port 8741
 """
@@ -13,7 +19,6 @@ import json
 import sys
 from pathlib import Path
 
-import duckdb
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
@@ -23,36 +28,63 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from stuffplus.config import (  # noqa: E402
     FOCUS_TEAM,
-    NAVY,
     PITCH_COLORS,
     PITCH_NAMES,
     PROCESSED_DIR,
     SHIP_TEST_YEAR,
 )
 
+APP_DIR = ROOT / "data" / "app"
+TABLES = (
+    "arsenal.parquet",
+    "pitcher_season.parquet",
+    "plot_sample.parquet",
+    "reliability.json",
+    "suggestions.json",
+    "memo.json",
+    "metrics.json",
+)
+
 st.set_page_config(page_title="Stuff+ desk", layout="wide")
 
 
-@st.cache_data
-def load_tables():
-    arsenal = pd.read_parquet(PROCESSED_DIR / "arsenal.parquet")
-    pitchers = pd.read_parquet(PROCESSED_DIR / "pitcher_season.parquet")
-    reliability = json.loads((PROCESSED_DIR / "reliability.json").read_text())
-    suggestions = json.loads((PROCESSED_DIR / "suggestions.json").read_text())
-    memo = json.loads((PROCESSED_DIR / "memo.json").read_text())
-    metrics = json.loads((PROCESSED_DIR / "metrics.json").read_text())
+def _complete(directory: Path) -> bool:
+    return all((directory / name).is_file() for name in TABLES)
+
+
+def resolve_data_dir() -> Path | None:
+    """Prefer the full pipeline output, then the committed app bundle."""
+    if _complete(PROCESSED_DIR):
+        return PROCESSED_DIR
+    if _complete(APP_DIR):
+        return APP_DIR
+    return None
+
+
+@st.cache_data(show_spinner=False)
+def load_tables(source: str):
+    """Local grades, reliability, and suggestions. ``source`` is a directory path."""
+    directory = Path(source)
+    arsenal = pd.read_parquet(directory / "arsenal.parquet")
+    pitchers = pd.read_parquet(directory / "pitcher_season.parquet")
+    reliability = json.loads((directory / "reliability.json").read_text())
+    suggestions = json.loads((directory / "suggestions.json").read_text())
+    memo = json.loads((directory / "memo.json").read_text())
+    metrics = json.loads((directory / "metrics.json").read_text())
     return arsenal, pitchers, reliability, suggestions, memo, metrics
 
 
-def pitcher_pitches(pitcher: int, season: int) -> pd.DataFrame:
-    path = str(PROCESSED_DIR / "plot_sample.parquet")
-    return duckdb.connect().execute(
-        """
-        SELECT * FROM read_parquet(?)
-        WHERE pitcher = ? AND game_year = ?
-        """,
-        [path, int(pitcher), int(season)],
-    ).fetchdf()
+@st.cache_data(show_spinner=False)
+def load_pitch_sample(source: str) -> pd.DataFrame:
+    """Pitch cloud for the movement and release charts. Read once per session."""
+    return pd.read_parquet(Path(source) / "plot_sample.parquet")
+
+
+def pitcher_pitches(source: str, pitcher: int, season: int) -> pd.DataFrame:
+    sample = load_pitch_sample(source)
+    return sample.loc[
+        (sample["pitcher"] == int(pitcher)) & (sample["game_year"] == int(season))
+    ].copy()
 
 
 def _fmt_stuff(value) -> str:
@@ -63,7 +95,9 @@ def _fmt_stuff(value) -> str:
 
 def movement_figure(sample: pd.DataFrame) -> go.Figure:
     figure = go.Figure()
-    for pitch_type, group in sample.groupby("pitch_type"):
+    for pitch_type, group in sample.groupby("pitch_type", observed=True):
+        if group.empty:
+            continue
         figure.add_trace(go.Scatter(
             x=group["hb_arm"],
             y=group["ivb"],
@@ -94,7 +128,9 @@ def movement_figure(sample: pd.DataFrame) -> go.Figure:
 
 def release_figure(sample: pd.DataFrame) -> go.Figure:
     figure = go.Figure()
-    for pitch_type, group in sample.groupby("pitch_type"):
+    for pitch_type, group in sample.groupby("pitch_type", observed=True):
+        if group.empty:
+            continue
         figure.add_trace(go.Scatter(
             x=group["release_pos_x"],
             y=group["release_pos_z"],
@@ -115,7 +151,7 @@ def release_figure(sample: pd.DataFrame) -> go.Figure:
     return figure
 
 
-def render_arsenal(arsenal, pitchers, suggestions, season, pitcher_id):
+def render_arsenal(arsenal, pitchers, suggestions, season, pitcher_id, source: str):
     rows = arsenal.loc[(arsenal["season"] == season) & (arsenal["pitcher"] == pitcher_id)].copy()
     summary = pitchers.loc[(pitchers["season"] == season) & (pitchers["pitcher"] == pitcher_id)]
     if rows.empty or summary.empty:
@@ -144,18 +180,18 @@ def render_arsenal(arsenal, pitchers, suggestions, season, pitcher_id):
         )
 
     left, right = st.columns([1.3, 1])
-    sample = pitcher_pitches(pitcher_id, season)
+    sample = pitcher_pitches(source, pitcher_id, season)
     with left:
         st.subheader("Movement")
         if sample.empty:
             st.write("No pitch sample stored for this pitcher.")
         else:
-            st.plotly_chart(movement_figure(sample), use_container_width=True)
+            st.plotly_chart(movement_figure(sample), width="stretch")
             st.caption("Positive horizontal break is arm-side run. Glove-side sweep is negative. Both hands use the same axis.")
     with right:
         st.subheader("Release")
         if not sample.empty:
-            st.plotly_chart(release_figure(sample), use_container_width=True)
+            st.plotly_chart(release_figure(sample), width="stretch")
             st.caption("Catcher's view. First base is to the right. This is location of the ball, not the official arm angle.")
 
     display = rows.copy()
@@ -177,7 +213,7 @@ def render_arsenal(arsenal, pitchers, suggestions, season, pitcher_id):
             "Stuff+", "Whiff grade", "Model RV / 100", "Actual RV / 100", "pitches",
         ]].rename(columns={"pitches": "Pitches"}),
         hide_index=True,
-        use_container_width=True,
+        width="stretch",
     )
     st.caption(
         "Stuff+ is 100 for an average pitcher-season of that pitch, and 10 points is one standard deviation. "
@@ -220,7 +256,7 @@ def render_leaderboard(arsenal, season):
         view[["Pitcher", "Team", "Throws", "Stuff+", "Velo", "IVB", "Arm-side", "Usage %", "Whiff %", "pitches"]].head(40)
         .rename(columns={"pitches": "Pitches"}),
         hide_index=True,
-        use_container_width=True,
+        width="stretch",
     )
     st.caption("Minimum 200 pitches. 100 is average for this pitch type in this season, not average across all pitches.")
 
@@ -240,7 +276,7 @@ def render_reliability(reliability, metrics):
                 continue
             rows.append({"Measure": name, "Sample size": point["n"], "Correlation": round(point["pearson"], 3), "Pitchers": point["pitchers"]})
     if rows:
-        st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
+        st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
     prophecy = reliability["split_half"]["spearman_brown"]
     st.markdown("**Smallest tested sample at a 0.70 correlation**")
     for name, block in prophecy.items():
@@ -275,7 +311,7 @@ def render_reliability(reliability, metrics):
             "Pearson": None if block.get("pearson") is None else round(block["pearson"], 3),
             "Spearman": None if block.get("spearman") is None else round(block["spearman"], 3),
         })
-    st.dataframe(pd.DataFrame(yoy_rows), hide_index=True, use_container_width=True)
+    st.dataframe(pd.DataFrame(yoy_rows), hide_index=True, width="stretch")
     holdout = metrics["holdout_2026_trained_on_2024_2025"]["metrics"]["lightgbm"]
     st.caption(
         f"Pitch-level R² of the 2026 run-value model is {holdout['r2']:.3f}. "
@@ -304,7 +340,7 @@ def render_method(metrics):
             "Pitch-level corr": None if block["corr"] is None else round(block["corr"], 3),
             "Pitcher-pitch corr": None if block["aggregated_min_100"]["corr"] is None else round(block["aggregated_min_100"]["corr"], 3),
         })
-    st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
+    st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
     cluster = metrics["clustering"]
     st.write(
         f"Shape clustering used a diagonal Gaussian mixture with k = {cluster['k']}, "
@@ -324,11 +360,16 @@ def render_method(metrics):
 
 
 def main():
-    needed = PROCESSED_DIR / "arsenal.parquet"
-    if not needed.exists():
-        st.error("Grades are not built yet. Run `python scripts/pull_statcast.py` and then `python scripts/run_pipeline.py`.")
+    data_dir = resolve_data_dir()
+    if data_dir is None:
+        st.error(
+            "Grades are not on this machine. Streamlit Community Cloud reads `data/app`. "
+            "A local refit writes that bundle at the end of `python scripts/run_pipeline.py` "
+            "(after `python scripts/pull_statcast.py`)."
+        )
         return
-    arsenal, pitchers, reliability, suggestions, memo, metrics = load_tables()
+    source = str(data_dir)
+    arsenal, pitchers, reliability, suggestions, memo, metrics = load_tables(source)
     st.title("Stuff+")
     st.markdown(
         "Pitch quality from the flight of the ball. **100 is league average** for that pitch type. "
@@ -354,7 +395,7 @@ def main():
                 default_index = ids.index(memo["pitcher"])
             choice = st.selectbox("Pitcher", options=list(range(len(ids))), format_func=lambda i: names[i], index=default_index)
             st.caption("Stuff+ uses physical traits only. Location shows up in the notes when results and stuff disagree.")
-        render_arsenal(arsenal, pitchers, suggestions, int(season), int(ids[choice]))
+        render_arsenal(arsenal, pitchers, suggestions, int(season), int(ids[choice]), source)
     with board_tab:
         season_board = st.selectbox("Leaderboard season", seasons, index=len(seasons) - 1, key="board_season")
         render_leaderboard(arsenal, int(season_board))

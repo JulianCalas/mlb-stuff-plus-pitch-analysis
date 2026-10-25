@@ -16,3 +16,9 @@ models/stuff_models.joblib
 *.egg-info/
 .venv/
 venv/
+
+# data/app is the committed Streamlit bundle (grades, suggestions, a thin
+# pitch cloud). The cache rules above do not match it. These exceptions
+# keep a broader data ignore from dropping the bundle later.
+!data/app/
+!data/app/**

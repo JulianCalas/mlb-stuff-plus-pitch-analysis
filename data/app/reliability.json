@@ -1,0 +1,284 @@
+{
+  "split_half": {
+    "curves": {
+      "Stuff+": [
+        {
+          "n": 25,
+          "pitchers": 769,
+          "repeats_used": 20,
+          "pearson": 0.6120503322764119,
+          "spearman": 0.5230389124854339
+        },
+        {
+          "n": 50,
+          "pitchers": 720,
+          "repeats_used": 20,
+          "pearson": 0.6833356885891457,
+          "spearman": 0.6149831950550315
+        },
+        {
+          "n": 75,
+          "pitchers": 677,
+          "repeats_used": 20,
+          "pearson": 0.7057430232656354,
+          "spearman": 0.6637003874876833
+        },
+        {
+          "n": 100,
+          "pitchers": 634,
+          "repeats_used": 20,
+          "pearson": 0.7462292311784221,
+          "spearman": 0.7148427109819369
+        },
+        {
+          "n": 150,
+          "pitchers": 562,
+          "repeats_used": 20,
+          "pearson": 0.8027741734326981,
+          "spearman": 0.7758603149862184
+        },
+        {
+          "n": 200,
+          "pitchers": 510,
+          "repeats_used": 20,
+          "pearson": 0.8407485508723525,
+          "spearman": 0.8132204140369177
+        },
+        {
+          "n": 300,
+          "pitchers": 422,
+          "repeats_used": 20,
+          "pearson": 0.8817065276132645,
+          "spearman": 0.8516219299520941
+        },
+        {
+          "n": 500,
+          "pitchers": 265,
+          "repeats_used": 20,
+          "pearson": 0.9192456474141103,
+          "spearman": 0.9074796231573788
+        },
+        {
+          "n": 800,
+          "pitchers": 147,
+          "repeats_used": 20,
+          "pearson": 0.9424468399692756,
+          "spearman": 0.9327112407347242
+        },
+        {
+          "n": 1000,
+          "pitchers": 105,
+          "repeats_used": 20,
+          "pearson": 0.9554905882758531,
+          "spearman": 0.950075679037943
+        }
+      ],
+      "Whiff rate": [
+        {
+          "n": 25,
+          "pitchers": 709,
+          "repeats_used": 20,
+          "pearson": 0.19533191532278468,
+          "spearman": 0.18519890727017035
+        },
+        {
+          "n": 50,
+          "pitchers": 624,
+          "repeats_used": 20,
+          "pearson": 0.3382923253834587,
+          "spearman": 0.322777200750256
+        },
+        {
+          "n": 75,
+          "pitchers": 550,
+          "repeats_used": 20,
+          "pearson": 0.43941237980289555,
+          "spearman": 0.41811930111970125
+        },
+        {
+          "n": 100,
+          "pitchers": 494,
+          "repeats_used": 20,
+          "pearson": 0.4850563818979892,
+          "spearman": 0.45752804457014234
+        },
+        {
+          "n": 150,
+          "pitchers": 405,
+          "repeats_used": 20,
+          "pearson": 0.5923970161048148,
+          "spearman": 0.5644058781502748
+        },
+        {
+          "n": 200,
+          "pitchers": 315,
+          "repeats_used": 20,
+          "pearson": 0.6678664048331395,
+          "spearman": 0.6477710208650695
+        },
+        {
+          "n": 300,
+          "pitchers": 189,
+          "repeats_used": 20,
+          "pearson": 0.7219805817397068,
+          "spearman": 0.7095973509369586
+        },
+        {
+          "n": 500,
+          "pitchers": 97,
+          "repeats_used": 20,
+          "pearson": 0.8032340724066082,
+          "spearman": 0.7827302258619435
+        },
+        {
+          "n": 800,
+          "pitchers": 1,
+          "repeats_used": 0,
+          "pearson": null,
+          "spearman": null
+        },
+        {
+          "n": 1000,
+          "pitchers": 0,
+          "repeats_used": 0,
+          "pearson": null,
+          "spearman": null
+        }
+      ],
+      "Actual run value": [
+        {
+          "n": 25,
+          "pitchers": 769,
+          "repeats_used": 20,
+          "pearson": 0.013592887199253084,
+          "spearman": 0.012546847422521734
+        },
+        {
+          "n": 50,
+          "pitchers": 720,
+          "repeats_used": 20,
+          "pearson": 0.05277290219841606,
+          "spearman": 0.05431929316039966
+        },
+        {
+          "n": 75,
+          "pitchers": 677,
+          "repeats_used": 20,
+          "pearson": 0.057712086958278085,
+          "spearman": 0.054412971017958355
+        },
+        {
+          "n": 100,
+          "pitchers": 634,
+          "repeats_used": 20,
+          "pearson": 0.06915564818811307,
+          "spearman": 0.0645584969353774
+        },
+        {
+          "n": 150,
+          "pitchers": 562,
+          "repeats_used": 20,
+          "pearson": 0.08109702098356468,
+          "spearman": 0.07325651896309625
+        },
+        {
+          "n": 200,
+          "pitchers": 510,
+          "repeats_used": 20,
+          "pearson": 0.10621409609638259,
+          "spearman": 0.10111080809140258
+        },
+        {
+          "n": 300,
+          "pitchers": 422,
+          "repeats_used": 20,
+          "pearson": 0.1351354726333164,
+          "spearman": 0.12485362105834685
+        },
+        {
+          "n": 500,
+          "pitchers": 265,
+          "repeats_used": 20,
+          "pearson": 0.18171809784613524,
+          "spearman": 0.17813819497285238
+        },
+        {
+          "n": 800,
+          "pitchers": 147,
+          "repeats_used": 20,
+          "pearson": 0.2728263432124028,
+          "spearman": 0.24358306447347539
+        },
+        {
+          "n": 1000,
+          "pitchers": 105,
+          "repeats_used": 20,
+          "pearson": 0.31813503592720466,
+          "spearman": 0.2611564379017209
+        }
+      ]
+    },
+    "spearman_brown": {
+      "Stuff+": {
+        "r_at_100": 0.7462292311784221,
+        "single_observation_reliability": 0.02856565045560847,
+        "n_for_0_70": 79.34985245511473,
+        "empirical_n_for_0_70": 75
+      },
+      "Whiff rate": {
+        "r_at_100": 0.4850563818979892,
+        "single_observation_reliability": 0.009331700868704959,
+        "n_for_0_70": 247.71040104722982,
+        "empirical_n_for_0_70": 300
+      },
+      "Actual run value": {
+        "r_at_100": 0.06915564818811307,
+        "single_observation_reliability": 0.0007423830640600944,
+        "n_for_0_70": 3140.6981369326077,
+        "empirical_n_for_0_70": null
+      }
+    }
+  },
+  "year_over_year": {
+    "stuff_plus_min_200": {
+      "n": 445,
+      "pearson": 0.7781215598228723,
+      "spearman": 0.7513986047316021
+    },
+    "whiff_rate_min_150_swings": {
+      "n": 385,
+      "pearson": 0.7106163873027227,
+      "spearman": 0.6988270986423171
+    },
+    "era_min_40_ip": {
+      "n": 256,
+      "pearson": 0.20937640713208888,
+      "spearman": 0.21709684698947282
+    },
+    "fip_min_40_ip": {
+      "n": 256,
+      "pearson": 0.44912225727764216,
+      "spearman": 0.42827609971050346
+    },
+    "k_pct_min_40_ip": {
+      "n": 256,
+      "pearson": 0.7006270249795545,
+      "spearman": 0.6728584982889445
+    },
+    "era_min_80_ip": {
+      "n": 106,
+      "pearson": 0.25714490959376873,
+      "spearman": 0.22920739203159954
+    },
+    "fip_min_80_ip": {
+      "n": 106,
+      "pearson": 0.5186841436733229,
+      "spearman": 0.5113383882913067
+    },
+    "k_pct_min_80_ip": {
+      "n": 106,
+      "pearson": 0.6813154288961367,
+      "spearman": 0.6309343275310477
+    }
+  }
+}

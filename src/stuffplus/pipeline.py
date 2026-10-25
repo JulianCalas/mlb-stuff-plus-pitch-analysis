@@ -704,7 +704,12 @@ def run() -> dict:
         stats.to_parquet(PROCESSED_DIR / "season_pitching.parquet", index=False)
     except Exception as exc:
         _log(f"MLB season stats unavailable: {exc}")
-        stats = pd.DataFrame()
+        cached_stats = PROCESSED_DIR / "season_pitching.parquet"
+        if cached_stats.exists():
+            _log("using cached data/processed/season_pitching.parquet")
+            stats = pd.read_parquet(cached_stats)
+        else:
+            stats = pd.DataFrame()
     yoy = _yoy_block(published, stats)
 
     _log("suggestions")
@@ -905,6 +910,13 @@ def run() -> dict:
     joblib.dump(
         {"ship": ship_model, "yoy": yoy_model, "whiff": whiff_model, "cluster": fitted},
         MODEL_DIR / "stuff_models.joblib",
+    )
+    from stuffplus.app_bundle import export_app_bundle
+
+    manifest = export_app_bundle()
+    _log(
+        f"app bundle {manifest['bytes'] / 1_048_576:.1f} MB, "
+        f"{manifest['pitchers']} pitchers, {manifest['per_pitch_cap']} pitches per pitch type"
     )
     _log("done")
     return metrics

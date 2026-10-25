@@ -1,0 +1,18 @@
+{
+  "source": "pipeline outputs in data/processed",
+  "per_pitch_cap": 48,
+  "bytes": 4665003,
+  "pitcher_seasons": 1634,
+  "pitchers": 1042,
+  "pitch_cloud_rows": 292887,
+  "files": [
+    "arsenal.parquet",
+    "manifest.json",
+    "memo.json",
+    "metrics.json",
+    "pitcher_season.parquet",
+    "plot_sample.parquet",
+    "reliability.json",
+    "suggestions.json"
+  ]
+}
