@@ -10,7 +10,7 @@ Streamlit Community Cloud, uses ``data/app``. A machine that has finished
 ``scripts/run_pipeline.py`` uses ``data/processed`` instead, because that
 copy includes the full plot sample.
 
-    streamlit run app/streamlit_app.py --server.port 8741
+    streamlit run app/streamlit_app.py
 """
 
 from __future__ import annotations

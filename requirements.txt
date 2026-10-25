@@ -3,6 +3,7 @@
 # Fitting, the Statcast pull, tests, and the notebook live in requirements-dev.txt.
 numpy==2.4.6
 pandas==3.1.0
-pyarrow==26.0.0
+# Community Cloud installs 24.x even when 26 is requested. Pin the version it runs.
+pyarrow==24.0.0
 plotly==7.1.0
 streamlit==1.66.1

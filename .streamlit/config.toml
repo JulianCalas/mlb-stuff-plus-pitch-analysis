@@ -8,10 +8,3 @@ backgroundColor = "#F7F4EF"
 secondaryBackgroundColor = "#EFEAE2"
 textColor = "#1C1917"
 font = "sans serif"
-
-[server]
-port = 8741
-headless = true
-address = "0.0.0.0"
-enableCORS = false
-enableXsrfProtection = false

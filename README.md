@@ -1,4 +1,4 @@
-**Live app:** placeholder — replace this with the Streamlit Community Cloud URL.
+**Live app:** https://julian-mlb-stuff-plus.streamlit.app/
 
 # Stuff+: what makes an MLB pitch effective?
 
@@ -146,7 +146,7 @@ Python 3.11 (`.python-version`). Community Cloud chooses the interpreter in Adva
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-streamlit run app/streamlit_app.py --server.port 8741
+streamlit run app/streamlit_app.py
 ```
 
 The raw season caches (`data/raw/pitches_YYYY.parquet`), `data/processed/plot_sample.parquet`, and `models/stuff_models.joblib` stay off GitHub because of size. To rebuild them and refresh `data/app`, use Python 3.12 (the fitting stack, including `shap`, does not install on 3.11), install `requirements-dev.txt`, and rerun the pull and the pipeline. The pull resumes from `data/raw/chunks/` if a day fails.
